@@ -1,4 +1,5 @@
 package ru.netology.web;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +9,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.openqa.selenium.chrome.ChromeOptions;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebElement;
 import static org.openqa.selenium.By.cssSelector;
 
@@ -20,7 +20,8 @@ public class SeleniumTest {
 
     @BeforeAll
     static void setUpAll() {
-        WebDriverManager.chromedriver().setup();
+        System.setProperty("webdriver.chrome.driver" ,"./drivers/chromedriver.exe");
+
 
     }
     @BeforeEach
@@ -37,7 +38,7 @@ public class SeleniumTest {
         driver = null;
     }
     @Test
-    void shouldTestV1() {
+    void verifiedData() {
         driver.get("http://localhost:9999/");
         WebElement form = driver.findElement(cssSelector("form"));
         driver.findElement(cssSelector("[data-test-id='name'] input")).sendKeys("Иванов Иван");
@@ -49,51 +50,49 @@ public class SeleniumTest {
         assertEquals(expected, actual);
     }
     @Test
-    void shouldTestV2() {
+    void emptyNameField() {
         driver.get("http://localhost:9999/");
         WebElement form = driver.findElement(cssSelector("form"));
-        //driver.findElement(cssSelector("[data-test-id='name'] input")).sendKeys("Иванов Иван");
         driver.findElement(cssSelector("[data-test-id='phone'] input")).sendKeys("+79998887766");
         driver.findElement(cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(cssSelector("button")).click();
         String expected = "Поле обязательно для заполнения";
-        String actual = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText().trim();
+        String actual = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid .input__sub")).getText().trim();
         assertEquals(expected, actual);
     }
     @Test
-    void shouldTestV3() {
+    void emptyPhoneField() {
         driver.get("http://localhost:9999/");
         WebElement form = driver.findElement(cssSelector("form"));
         driver.findElement(cssSelector("[data-test-id='name'] input")).sendKeys("Иванов Иван");
-        //driver.findElement(cssSelector("[data-test-id='phone'] input")).sendKeys("+79998887766");
         driver.findElement(cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(cssSelector("button")).click();
         String expected = "Поле обязательно для заполнения";
-        String actual = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText().trim();
+        String actual = driver.findElement(By.cssSelector("[data-test-id='phone'].input_invalid .input__sub")).getText().trim();
         assertEquals(expected, actual);
     }
     @Test
-    void shouldTestV4() {
+    void submittingFormWithoutConsent() {
         driver.get("http://localhost:9999/");
         WebElement form = driver.findElement(cssSelector("form"));
         driver.findElement(cssSelector("[data-test-id='name'] input")).sendKeys("Иванов Иван");
         driver.findElement(cssSelector("[data-test-id='phone'] input")).sendKeys("+79998887766");
         driver.findElement(cssSelector("button")).click();
         String expected = "Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй";
-        String actual = driver.findElement(By.cssSelector(".input_invalid ")).getText().trim();
+        String actual = driver.findElement(By.cssSelector("[data-test-id='agreement'].input_invalid ")).getText().trim();
         assertEquals(expected, actual);
     }
     @Test
-    void shouldTestV5() {
+    void emptyFields() {
         driver.get("http://localhost:9999/");
         WebElement form = driver.findElement(cssSelector("form"));
         driver.findElement(cssSelector("button")).click();
         String expected = "Поле обязательно для заполнения";
-        String actual = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText().trim();
+        String actual = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid .input__sub")).getText().trim();
         assertEquals(expected, actual);
     }
     @Test
-    void shouldTestV6() {
+    void nameVerificationInLatin() {
         driver.get("http://localhost:9999/");
         WebElement form = driver.findElement(cssSelector("form"));
         driver.findElement(cssSelector("[data-test-id='name'] input")).sendKeys("Ivanov Ivan");
@@ -101,11 +100,11 @@ public class SeleniumTest {
         driver.findElement(cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(cssSelector("button")).click();
         String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
-        String actual = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText().trim();
+        String actual = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid .input__sub")).getText().trim();
         assertEquals(expected, actual);
     }
     @Test
-    void shouldTestV7() {
+    void checkingThePhoneNumber() {
         driver.get("http://localhost:9999/");
         WebElement form = driver.findElement(cssSelector("form"));
         driver.findElement(cssSelector("[data-test-id='name'] input")).sendKeys("Иванов Иван");
@@ -113,7 +112,7 @@ public class SeleniumTest {
         driver.findElement(cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(cssSelector("button")).click();
         String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
-        String actual = driver.findElement(By.cssSelector(".input_invalid .input__sub")).getText().trim();
+        String actual = driver.findElement(By.cssSelector("[data-test-id='phone'].input_invalid .input__sub")).getText().trim();
         assertEquals(expected, actual);
     }
 
